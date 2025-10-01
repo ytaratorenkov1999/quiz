@@ -6,15 +6,8 @@ class QuizApp {
         this.score = 0;
         this.correctAnswers = 0;
         this.questionHistory = [];
-        this.selectedAnswers = {}; // Хранение выбранных ответов для каждого вопроса
+        this.selectedAnswers = {};
         this.portalUrl = '/';
-
-        this.exitModal = null;
-        this.exitConfirm = null;
-        this.exitCancel = null;
-
-        this.categoryModal = null;
-        this.categoryModalData = null;
 
         this.init();
     }
@@ -22,14 +15,25 @@ class QuizApp {
     init() {
         this.cacheElements();
         this.attachEventListeners();
-        this.initModals();
     }
 
     cacheElements() {
+        // Экраны
         this.welcomeScreen = document.getElementById('welcome-screen');
+        this.categoryInfoScreen = document.getElementById('category-info-screen');
         this.quizScreen = document.getElementById('quiz-screen');
         this.resultsScreen = document.getElementById('results-screen');
 
+        // Элементы экрана информации о категории
+        this.categoryInfoIcon = document.getElementById('category-info-icon');
+        this.categoryInfoTitle = document.getElementById('category-info-title');
+        this.categoryInfoDescription = document.getElementById('category-info-description');
+        this.categoryInfoQuestions = document.getElementById('category-info-questions');
+        this.categoryInfoDifficulty = document.getElementById('category-info-difficulty');
+        this.categoryInfoBack = document.getElementById('category-info-back');
+        this.categoryInfoStart = document.getElementById('category-info-start');
+
+        // Элементы викторины
         this.questionText = document.getElementById('question-text');
         this.questionImageContainer = document.getElementById('question-image-container');
         this.answersContainer = document.getElementById('answers-container');
@@ -39,6 +43,7 @@ class QuizApp {
         this.nextBtn = document.getElementById('next-btn');
         this.backBtn = document.getElementById('back-btn');
 
+        // Элементы результатов
         this.resultsIcon = document.getElementById('results-icon');
         this.resultsTitle = document.getElementById('results-title');
         this.finalScoreSpan = document.getElementById('final-score');
@@ -48,15 +53,59 @@ class QuizApp {
         this.percentageSpan = document.getElementById('percentage');
         this.resultsStats = document.getElementById('results-stats');
 
+        // Кнопки
         this.exitBtn = document.getElementById('exit-btn');
-    }
 
-    initModals() {
-        // Exit modal
+        // Модальное окно выхода
         this.exitModal = document.getElementById('exit-modal');
         this.exitConfirm = document.getElementById('exit-confirm');
         this.exitCancel = document.getElementById('exit-cancel');
+    }
 
+    attachEventListeners() {
+        // Кнопка выхода
+        this.exitBtn.addEventListener('click', () => {
+            this.handleExitClick();
+        });
+
+        // Кнопки категорий
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const category = e.currentTarget.dataset.category;
+                this.showCategoryInfo(category);
+            });
+        });
+
+        // Кнопки экрана информации о категории
+        this.categoryInfoBack.addEventListener('click', () => {
+            this.showScreen(this.welcomeScreen);
+        });
+
+        this.categoryInfoStart.addEventListener('click', () => {
+            if (this.selectedCategory) {
+                this.startQuiz(this.selectedCategory);
+            }
+        });
+
+        // Кнопки викторины
+        this.backBtn.addEventListener('click', () => {
+            this.goBack();
+        });
+
+        this.nextBtn.addEventListener('click', () => {
+            this.nextQuestion();
+        });
+
+        // Кнопки результатов
+        document.getElementById('play-again-btn').addEventListener('click', () => {
+            this.startQuiz(this.currentCategory);
+        });
+
+        document.getElementById('change-category-btn').addEventListener('click', () => {
+            this.showScreen(this.welcomeScreen);
+        });
+
+        // Модальное окно выхода
         this.exitConfirm.addEventListener('click', () => {
             this.returnToWelcomeScreen();
         });
@@ -70,123 +119,68 @@ class QuizApp {
                 this.hideExitModal();
             }
         });
-
-        // Category modal
-        this.categoryModal = document.getElementById('category-modal');
-        this.categoryModalIcon = document.getElementById('category-modal-icon');
-        this.categoryModalTitle = document.getElementById('category-modal-title');
-        this.categoryModalDescription = document.getElementById('category-modal-description');
-        this.categoryModalQuestions = document.getElementById('category-modal-questions');
-        this.categoryModalDifficulty = document.getElementById('category-modal-difficulty');
-        this.categoryBackBtn = document.getElementById('category-back');
-        this.categoryStartBtn = document.getElementById('category-start');
-
-        this.categoryBackBtn.addEventListener('click', () => {
-            this.hideCategoryModal();
-        });
-
-        this.categoryStartBtn.addEventListener('click', () => {
-            this.hideCategoryModal();
-            if (this.selectedCategory) {
-        this.startQuiz(this.selectedCategory);
-            }
-        });
-
-        this.categoryModal.addEventListener('click', (e) => {
-            if (e.target === this.categoryModal) {
-                this.hideCategoryModal();
-            }
-        });
-    }
-
-    attachEventListeners() {
-        this.exitBtn.addEventListener('click', () => {
-            this.handleExitClick();
-        });
-
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const category = e.currentTarget.dataset.category;
-                this.showCategoryModal(category, e.currentTarget);
-            });
-        });
-
-        this.backBtn.addEventListener('click', () => {
-            this.goBack();
-        });
-
-        this.nextBtn.addEventListener('click', () => {
-            this.nextQuestion();
-        });
-
-        document.getElementById('play-again-btn').addEventListener('click', () => {
-            this.startQuiz(this.currentCategory);
-        });
-
-        document.getElementById('change-category-btn').addEventListener('click', () => {
-            this.showScreen(this.welcomeScreen);
-        });
     }
 
     getCategoryData(category) {
         const categories = {
-            geography: {
-                title: 'География',
-                icon: '🌍',
+            cinema: {
+                title: 'Кино на борту',
+                icon: '🎬',
                 difficulty: 'Средняя',
                 questions: 10,
-                description: 'Проверьте свои знаниимттттттттттим тмитмитимтимтимтимтмитимтимтмия о странах, столицах, реках и горах мира.'
+                description: 'Проверьте свои знания о фильмах и кинематографе. Вопросы о классических и современных картинах.'
             },
-            aviation: {
-                title: 'Авиация',
-                icon: '✈️',
-                difficulty: 'Сложная',
-                questions: 10,
-                description: 'Узнайте, насколько хорошо вы разбираетесь в авиации и истории полётов.'
-            },
-            culture: {
-                title: 'Культура',
-                icon: '🎭',
+            literature: {
+                title: 'Литература',
+                icon: '📚',
                 difficulty: 'Средняя',
                 questions: 10,
-                description: 'Проверьте свои знания в области искусства, литературы и музыки.'
+                description: 'Классические и современные произведения мировой литературы. Проверьте свою начитанность!'
             },
-            science: {
-                title: 'Наука',
-                icon: '🔬',
+            school: {
+                title: 'Школа',
+                icon: '🏫',
+                difficulty: 'Средняя',
+                questions: 10,
+                description: 'Вопросы из школьной программы по разным предметам. Вспомните школьные годы!'
+            },
+            ecology: {
+                title: 'Экология',
+                icon: '🌱',
+                difficulty: 'Тяжелая',
+                questions: 10,
+                description: 'Окружающая среда, природа и экологические проблемы. Насколько вы эко-сознательны?'
+            },
+            cartoons: {
+                title: 'Мультфильмы',
+                icon: '🐭',
+                difficulty: 'Легкая',
+                questions: 10,
+                description: 'Любимые персонажи и сюжеты из мультфильмов. Отличная викторина для всей семьи!'
+            },
+            art: {
+                title: 'Искусство',
+                icon: '🎨',
                 difficulty: 'Сложная',
                 questions: 10,
-                description: 'Испытайте свои знания в области физики, химии и биологии.'
-            },
-            mixed: {
-                title: 'Микс',
-                icon: '🎲',
-                difficulty: 'Разная',
-                questions: 15,
-                description: 'Разнообразная викторина с вопросами из всех категорий.'
+                description: 'Живопись, скульптура и другие виды искусства. Для настоящих ценителей прекрасного!'
             }
         };
         return categories[category];
     }
 
-    showCategoryModal(category, btnElement) {
+    showCategoryInfo(category) {
         const categoryData = this.getCategoryData(category);
 
-        this.categoryModalIcon.textContent = categoryData.icon;
-        this.categoryModalTitle.textContent = categoryData.title;
-        this.categoryModalDescription.textContent = categoryData.description;
-        this.categoryModalQuestions.textContent = categoryData.questions;
-        this.categoryModalDifficulty.textContent = categoryData.difficulty;
+        this.categoryInfoIcon.textContent = categoryData.icon;
+        this.categoryInfoTitle.textContent = categoryData.title;
+        this.categoryInfoDescription.textContent = categoryData.description;
+        this.categoryInfoQuestions.textContent = categoryData.questions;
+        this.categoryInfoDifficulty.textContent = categoryData.difficulty;
 
-        // Сохраняем выбранную категорию в отдельном поле
         this.selectedCategory = category;
 
-        this.categoryModal.classList.add('active');
-    }
-
-    hideCategoryModal() {
-        this.categoryModal.classList.remove('active');
-        this.categoryModalData = null;
+        this.showScreen(this.categoryInfoScreen);
     }
 
     handleExitClick() {
@@ -265,18 +259,14 @@ class QuizApp {
             this.answersContainer.appendChild(button);
         });
 
-        // Проверяем, был ли уже дан ответ на этот вопрос
         const savedAnswer = this.selectedAnswers[this.currentQuestionIndex];
         if (savedAnswer !== undefined) {
-            // Восстанавливаем состояние
             this.restoreAnswerState(savedAnswer);
         } else {
-            // Скрываем кнопку "Далее"
             this.nextBtn.classList.remove('active');
             this.nextBtn.disabled = true;
         }
 
-        // Управление кнопкой "Назад"
         if (this.questionHistory.length === 0) {
             this.backBtn.style.opacity = '0.5';
         } else {
@@ -302,7 +292,6 @@ class QuizApp {
     }
 
     selectAnswer(selectedIndex) {
-        // Если уже был выбран ответ, игнорируем
         if (this.selectedAnswers[this.currentQuestionIndex] !== undefined) {
             return;
         }
@@ -310,7 +299,6 @@ class QuizApp {
         const question = this.questions[this.currentQuestionIndex];
         const answerButtons = this.answersContainer.querySelectorAll('.answer-btn');
 
-        // Сохраняем выбранный ответ
         this.selectedAnswers[this.currentQuestionIndex] = selectedIndex;
 
         answerButtons.forEach(btn => btn.classList.add('disabled'));
@@ -326,7 +314,6 @@ class QuizApp {
             answerButtons[question.correct].classList.add('correct');
         }
 
-        // Активируем кнопку "Далее" быстрее (100ms вместо 500ms)
         setTimeout(() => {
             this.nextBtn.classList.add('active');
             this.nextBtn.disabled = false;
@@ -346,15 +333,9 @@ class QuizApp {
 
     goBack() {
         if (this.questionHistory.length > 0) {
-            // Возвращаемся к предыдущему вопросу
             this.currentQuestionIndex = this.questionHistory.pop();
-
-            // НЕ удаляем сохраненный ответ - он должен остаться
-            // delete this.selectedAnswers[this.currentQuestionIndex]; // УДАЛЕНО
-
             this.loadQuestion();
         } else {
-            // Если истории нет, возвращаемся на главный экран
             this.showExitModal();
         }
     }
@@ -407,9 +388,13 @@ class QuizApp {
     showScreen(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         screen.classList.add('active');
+
+        // Прокрутка наверх при смене экрана
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
+// Инициализация приложения
 document.addEventListener('DOMContentLoaded', () => {
     new QuizApp();
 });
