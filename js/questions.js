@@ -4,7 +4,7 @@ const questionsDatabase = {
             question: "Какая столица России?",
             answers: ["Санкт-Петербург", "Москва", "Казань", "Владивосток"],
             correct: 1,
-            image: "images/moscow.jpg" // Пример изображения
+            image: "images/ART_1.jpg" // Пример изображения
         },
         {
             question: "Какая самая длинная река в мире?",
@@ -16,49 +16,49 @@ const questionsDatabase = {
             question: "В какой стране находится город Токио?",
             answers: ["Китай", "Южная Корея", "Япония", "Таиланд"],
             correct: 2,
-            image: "images/tokyo.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Какой океан самый большой?",
             answers: ["Атлантический", "Индийский", "Северный Ледовитый", "Тихий"],
             correct: 3,
-            image: "images/pacific.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Столица Франции?",
             answers: ["Лондон", "Берлин", "Париж", "Мадрид"],
             correct: 2,
-            image: "images/paris.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Какая гора самая высокая в мире?",
             answers: ["Эльбрус", "Килиманджаро", "Эверест", "Монблан"],
             correct: 2,
-            image: "images/everest.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "В какой стране находится Великая Китайская стена?",
             answers: ["Япония", "Монголия", "Китай", "Корея"],
             correct: 2,
-            image: "images/great-wall.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Какое озеро самое глубокое в мире?",
             answers: ["Байкал", "Виктория", "Танганьика", "Мичиган"],
             correct: 0,
-            image: "images/baikal.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Столица Италии?",
             answers: ["Милан", "Венеция", "Рим", "Флоренция"],
             correct: 2,
-            image: "images/rome.jpg"
+            image: "images/ART_1.jpg"
         },
         {
             question: "Какой континент самый большой по площади?",
             answers: ["Африка", "Северная Америка", "Евразия", "Южная Америка"],
             correct: 2,
-            image: "images/eurasia.jpg"
+            image: "images/ART_1.jpg"
         }
     ],
 

@@ -830,3 +830,107 @@ html, body {
     overflow-x: hidden;
     max-width: 100%;
 }
+/* Category Modal */
+.modal-category {
+    max-width: 480px;
+    padding: 48px 40px;
+}
+
+.category-modal-icon {
+    font-size: 5em;
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s ease;
+}
+
+.category-modal-title {
+    font-size: 2em;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.category-modal-description {
+    font-size: 1.1em;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.category-modal-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(255, 255, 255, 0.15) 80%,
+        transparent);
+    margin: 24px 0;
+}
+
+.category-modal-info {
+    display: flex;
+    justify-content: space-around;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-label {
+    font-size: 0.9em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* Удаляем старые стили анимации категорий */
+.category-btn .category-info-container,
+.category-btn .slot-machine,
+.category-btn .slot-content,
+.category-btn .info-title,
+.category-btn .info-difficulty,
+.category-btn .info-questions {
+    display: none;
+}
+
+/* Упрощаем категории - только иконка и название */
+.category-btn {
+    transition: var(--transition);
+}
+
+.category-btn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+    .modal-category {
+        padding: 36px 28px;
+    }
+
+    .category-modal-icon {
+        font-size: 4em;
+    }
+
+    .category-modal-title {
+        font-size: 1.6em;
+    }
+
+    .category-modal-description {
+        font-size: 1em;
+    }
+
+    .category-modal-info {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
