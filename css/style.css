@@ -1,3 +1,6 @@
+/* ============================================
+   БАЗОВЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
+   ============================================ */
 * {
     margin: 0;
     padding: 0;
@@ -19,6 +22,10 @@
     --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', Arial, sans-serif;
     background: radial-gradient(1200px 800px at 20% -10%, #1f2937 0, transparent 60%),
@@ -30,6 +37,7 @@ body {
     justify-content: center;
     padding: 20px;
     color: var(--text);
+    overflow-x: hidden;
 }
 
 .container {
@@ -58,7 +66,9 @@ body {
     }
 }
 
-/* Exit Button */
+/* ============================================
+   КНОПКА ВЫХОДА
+   ============================================ */
 .exit-btn {
     position: fixed;
     top: 20px;
@@ -85,7 +95,9 @@ body {
     transform: rotate(90deg);
 }
 
-/* Welcome Screen */
+/* ============================================
+   ГЛАВНЫЙ ЭКРАН (WELCOME)
+   ============================================ */
 .logo {
     text-align: center;
     margin-bottom: 60px;
@@ -129,181 +141,6 @@ body {
     min-height: 160px;
 }
 
-/* Анимация слот-машины */
-.category-info-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-    margin-top: 8px;
-}
-
-.slot-machine {
-    height: 28px;
-    overflow: hidden;
-    position: relative;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-}
-
-.slot-content {
-    position: absolute;
-    width: 100%;
-    top: 100%;
-    transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.slot-machine.animate .slot-content {
-    top: 0;
-}
-
-.info-title {
-    font-size: 1.1em;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-    padding: 4px 8px;
-}
-
-.info-difficulty {
-    font-size: 0.9em;
-    color: var(--accent);
-    display: block;
-    padding: 4px 8px;
-}
-
-.info-questions {
-    font-size: 0.9em;
-    color: var(--muted);
-    display: block;
-    padding: 4px 8px;
-}
-
-/* Градиенты для категорий */
-.category-btn[data-category="geography"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 211, 238, 0.3));
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.category-btn[data-category="geography"]:hover::before,
-.category-btn[data-category="geography"].show-info::before {
-    opacity: 1;
-}
-
-.category-btn[data-category="geography"]:hover,
-.category-btn[data-category="geography"].show-info {
-    transform: translateY(-8px) scale(1.02);
-    border-color: #10b981;
-    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.5);
-}
-
-.category-btn[data-category="aviation"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.category-btn[data-category="aviation"]:hover::before,
-.category-btn[data-category="aviation"].show-info::before {
-    opacity: 1;
-}
-
-.category-btn[data-category="aviation"]:hover,
-.category-btn[data-category="aviation"].show-info {
-    transform: translateY(-8px) scale(1.02);
-    border-color: #3b82f6;
-    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.5);
-}
-
-.category-btn[data-category="culture"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.category-btn[data-category="culture"]:hover::before,
-.category-btn[data-category="culture"].show-info::before {
-    opacity: 1;
-}
-
-.category-btn[data-category="culture"]:hover,
-.category-btn[data-category="culture"].show-info {
-    transform: translateY(-8px) scale(1.02);
-    border-color: #ec4899;
-    box-shadow: 0 20px 60px rgba(236, 72, 153, 0.5);
-}
-
-.category-btn[data-category="science"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(239, 68, 68, 0.3));
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.category-btn[data-category="science"]:hover::before,
-.category-btn[data-category="science"].show-info::before {
-    opacity: 1;
-}
-
-.category-btn[data-category="science"]:hover,
-.category-btn[data-category="science"].show-info {
-    transform: translateY(-8px) scale(1.02);
-    border-color: #f97316;
-    box-shadow: 0 20px 60px rgba(249, 115, 22, 0.5);
-}
-
-.category-btn[data-category="mixed"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg,
-        rgba(239, 68, 68, 0.2),
-        rgba(249, 115, 22, 0.2),
-        rgba(34, 211, 238, 0.2),
-        rgba(139, 92, 246, 0.2));
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.category-btn[data-category="mixed"]:hover::before,
-.category-btn[data-category="mixed"].show-info::before {
-    opacity: 1;
-}
-
-.category-btn[data-category="mixed"]:hover,
-.category-btn[data-category="mixed"].show-info {
-    transform: translateY(-8px) scale(1.02);
-    border-color: #a855f7;
-    box-shadow: 0 20px 60px rgba(168, 85, 247, 0.5);
-}
-
 .category-btn .icon {
     font-size: 3.5em;
     position: relative;
@@ -324,7 +161,226 @@ body {
     z-index: 1;
 }
 
-/* Quiz Screen */
+/* Градиенты для категорий */
+.category-btn[data-category="cinema"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="cinema"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="cinema"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #ec4899;
+    box-shadow: 0 20px 60px rgba(236, 72, 153, 0.5);
+}
+
+.category-btn[data-category="literature"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 0), rgba(34, 211, 238, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="literature"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="literature"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #10b981;
+    box-shadow: 0 20px 60px rgba(255, 255, 0);
+}
+
+.category-btn[data-category="school"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="school"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="school"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #3b82f6;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.5);
+}
+
+.category-btn[data-category="ecology"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 211, 238, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="ecology"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="ecology"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #10b981;
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.5);
+}
+
+.category-btn[data-category="cartoons"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(239, 68, 68, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="cartoons"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="cartoons"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #f97316;
+    box-shadow: 0 20px 60px rgba(249, 115, 22, 0.5);
+}
+
+.category-btn[data-category="art"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.category-btn[data-category="art"]:hover::before {
+    opacity: 1;
+}
+
+.category-btn[data-category="art"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #8b5cf6;
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+}
+
+/* ============================================
+   ЭКРАН ИНФОРМАЦИИ О КАТЕГОРИИ
+   ============================================ */
+.category-info-content {
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--border-radius);
+    padding: 48px 40px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.category-info-icon {
+    font-size: 5em;
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.category-info-title {
+    font-size: 2em;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.category-info-description {
+    font-size: 1.1em;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.category-info-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(255, 255, 255, 0.15) 80%,
+        transparent);
+    margin: 24px 0;
+}
+
+.category-info-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.info-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-stat-label {
+    font-size: 0.9em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-stat-value {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.category-info-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* ============================================
+   ЭКРАН ВИКТОРИНЫ
+   ============================================ */
 #quiz-screen {
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
     backdrop-filter: blur(8px);
@@ -368,7 +424,6 @@ body {
     color: var(--muted);
 }
 
-/* Изображение вопроса - ИСПРАВЛЕНО */
 #question-image-container {
     width: 100%;
     margin-bottom: 24px;
@@ -494,7 +549,6 @@ body {
     min-height: 48px;
 }
 
-/* Кнопка "Далее" - ВСЕГДА видимая */
 .btn-primary {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.4);
@@ -538,7 +592,9 @@ body {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Results Screen */
+/* ============================================
+   ЭКРАН РЕЗУЛЬТАТОВ
+   ============================================ */
 #results-screen {
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
     backdrop-filter: blur(8px);
@@ -556,12 +612,6 @@ body {
     font-size: 6em;
     margin-bottom: 24px;
     animation: bounceIn 1s ease;
-}
-
-@keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
 }
 
 .results-title {
@@ -655,7 +705,9 @@ body {
     flex-wrap: wrap;
 }
 
-/* Modal */
+/* ============================================
+   МОДАЛЬНОЕ ОКНО (только для выхода)
+   ============================================ */
 .modal {
     display: none;
     position: fixed;
@@ -722,14 +774,80 @@ body {
     min-width: 100px;
 }
 
-/* Responsive */
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+/* Планшеты (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        max-width: 90%;
+    }
+    
+    .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .question {
+        font-size: 1.5em;
+    }
+}
+
+/* Планшеты и большие телефоны (481px - 768px) */
 @media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
     .subtitle {
-        font-size: 1.3em;
+        font-size: 1.4em;
     }
 
     .categories {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .category-btn {
+        padding: 24px 16px;
+        min-height: 140px;
+    }
+
+    .category-btn .icon {
+        font-size: 2.8em;
+    }
+
+    .category-btn .title {
+        font-size: 1.1em;
+    }
+
+    .category-info-content {
+        padding: 36px 28px;
+    }
+
+    .category-info-icon {
+        font-size: 4em;
+    }
+
+    .category-info-title {
+        font-size: 1.6em;
+    }
+
+    .category-info-description {
+        font-size: 1em;
+    }
+
+    .category-info-stats {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .category-info-actions {
+        flex-direction: column;
+    }
+
+    .category-info-actions .btn {
+        width: 100%;
     }
 
     .question {
@@ -740,6 +858,24 @@ body {
         max-height: 300px;
     }
 
+    .answer-btn {
+        padding: 16px 18px;
+        font-size: 1em;
+    }
+
+    #quiz-screen,
+    #results-screen {
+        padding: 28px 20px;
+    }
+
+    .quiz-controls {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
     .results-title {
         font-size: 1.8em;
     }
@@ -748,25 +884,21 @@ body {
         font-size: 3.5em;
     }
 
-    #quiz-screen,
-    #results-screen {
-        padding: 24px;
-    }
-
-    .quiz-controls {
-        flex-direction: column;
-    }
-
     .results-actions {
         flex-direction: column;
     }
 
-    .btn {
-        width: 100%;
+    .results-stats {
+        grid-template-columns: 1fr;
     }
 }
 
+/* Телефоны (до 480px) */
 @media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
     .exit-btn {
         width: 40px;
         height: 40px;
@@ -775,22 +907,66 @@ body {
     }
 
     .subtitle {
-        font-size: 1.1em;
+        font-size: 1.2em;
+    }
+
+    .logo {
+        margin-bottom: 40px;
+    }
+
+    .categories {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .category-btn {
+        padding: 24px 20px;
+        min-height: 130px;
+    }
+
+    .category-btn .icon {
+        font-size: 2.5em;
+    }
+
+    .category-btn .title {
+        font-size: 1.1em;
+    }
+
+    .category-info-content {
+        padding: 30px 20px;
+    }
+
+    .category-info-icon {
+        font-size: 3.5em;
+    }
+
+    .category-info-title {
+        font-size: 1.4em;
+    }
+
+    .category-info-description {
+        font-size: 0.95em;
+    }
+
+    .info-stat-value {
+        font-size: 1.2em;
+    }
+
+    .info-stat-label {
+        font-size: 0.85em;
+    }
+
+    #quiz-screen {
         padding: 20px 16px;
-        min-height: 140px;
     }
 
-    .btn {
-        padding: 14px 16px;
-        font-size: 15px;
+    .quiz-header {
+        margin-bottom: 28px;
     }
 
-    .answer-btn {
-        padding: 16px;
-        min-height: 60px;
+    .question {
+        font-size: 1.2em;
+        margin-bottom: 24px;
     }
 
     .question-image {
@@ -798,12 +974,73 @@ body {
         max-height: 250px;
     }
 
+    .answer-btn {
+        padding: 14px 16px;
+        font-size: 0.95em;
+        min-height: 56px;
+    }
+
+    .btn {
+        padding: 14px 20px;
+        font-size: 0.95em;
+        min-height: 44px;
+    }
+
+    #results-screen {
+        padding: 40px 20px;
+    }
+
+    .results-icon {
+        font-size: 4.5em;
+    }
+
+    .results-title {
+        font-size: 1.5em;
+        margin-bottom: 28px;
+    }
+
+    .score-display {
+        padding: 28px 20px;
+    }
+
+    .score-value {
+        font-size: 3em;
+    }
+
+    .score-label {
+        font-size: 1.1em;
+    }
+
+    .correct-answers {
+        font-size: 1.1em;
+    }
+
+    .percentage {
+        font-size: 1.6em;
+    }
+
+    .results-message {
+        font-size: 1em;
+    }
+
+    .stat-item {
+        padding: 16px;
+    }
+
+    .stat-value {
+        font-size: 1.6em;
+    }
+
     .modal-content {
-        padding: 30px 24px;
+        padding: 30px 20px;
+    }
+
+    .modal-icon {
+        font-size: 3.5em;
     }
 
     .modal-title {
-        font-size: 1.3em;
+        font-size: 1.2em;
     }
 
     .modal-actions {
@@ -812,6 +1049,153 @@ body {
 
     .modal-actions .btn {
         width: 100%;
+    }
+}
+
+/* Очень маленькие экраны (до 360px) */
+@media (max-width: 360px) {
+    .subtitle {
+        font-size: 1.1em;
+    }
+
+    .category-btn {
+        padding: 20px 16px;
+        min-height: 120px;
+    }
+
+    .category-btn .icon {
+        font-size: 2.2em;
+    }
+
+    .category-btn .title {
+        font-size: 1em;
+    }
+
+    .question {
+        font-size: 1.1em;
+    }
+
+    .answer-btn {
+        font-size: 0.9em;
+        padding: 12px 14px;
+    }
+
+    .btn {
+        font-size: 0.9em;
+        padding: 12px 16px;
+    }
+}
+
+/* Ландшафтная ориентация для телефонов */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+    }
+
+    .logo {
+        margin-bottom: 20px;
+    }
+
+    .subtitle {
+        font-size: 1.2em;
+    }
+
+    .categories {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .category-btn {
+        padding: 16px 12px;
+        min-height: 100px;
+    }
+
+    .category-btn .icon {
+        font-size: 2em;
+    }
+
+    .category-btn .title {
+        font-size: 0.95em;
+    }
+
+    .category-info-content {
+        padding: 24px 20px;
+    }
+
+    .category-info-icon {
+        font-size: 3em;
+    }
+
+    .category-info-title {
+        font-size: 1.3em;
+        margin-bottom: 10px;
+    }
+
+    .category-info-description {
+        font-size: 0.9em;
+        margin-bottom: 16px;
+    }
+
+    .category-info-stats {
+        flex-direction: row;
+        margin-bottom: 20px;
+    }
+
+    #quiz-screen {
+        padding: 20px;
+    }
+
+    .quiz-header {
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    .question-image {
+        max-height: 200px;
+    }
+
+    .answers {
+        margin-bottom: 20px;
+    }
+
+    .answer-btn {
+        padding: 12px 16px;
+    }
+
+    #results-screen {
+        padding: 30px 20px;
+    }
+
+    .results-icon {
+        font-size: 3.5em;
+        margin-bottom: 16px;
+    }
+
+    .results-title {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+    }
+
+    .score-display {
+        padding: 24px 20px;
+        margin-bottom: 20px;
+    }
+
+    .score-value {
+        font-size: 2.5em;
+    }
+
+    .results-stats {
+        grid-template-columns: repeat(3, 1fr);
+        margin-bottom: 20px;
+    }
+
+    .stat-item {
+        padding: 12px;
     }
 }
 
@@ -826,111 +1210,33 @@ button, .category-btn, .answer-btn {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Предотвращение горизонтальной прокрутки */
 html, body {
     overflow-x: hidden;
     max-width: 100%;
 }
-/* Category Modal */
-.modal-category {
-    max-width: 480px;
-    padding: 48px 40px;
+
+/* Улучшение производительности анимаций */
+.category-btn,
+.answer-btn,
+.btn {
+    will-change: transform;
 }
 
-.category-modal-icon {
-    font-size: 5em;
-    margin-bottom: 20px;
-    animation: bounceIn 0.6s ease;
-}
-
-.category-modal-title {
-    font-size: 2em;
-    color: var(--text);
-    margin-bottom: 16px;
-    font-weight: 700;
-}
-
-.category-modal-description {
-    font-size: 1.1em;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 24px;
-}
-
-.category-modal-divider {
-    height: 1px;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(255, 255, 255, 0.15) 20%,
-        rgba(255, 255, 255, 0.15) 80%,
-        transparent);
-    margin: 24px 0;
-}
-
-.category-modal-info {
-    display: flex;
-    justify-content: space-around;
-    gap: 24px;
-    margin-bottom: 32px;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.info-label {
-    font-size: 0.9em;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-value {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: var(--accent);
-}
-
-/* Удаляем старые стили анимации категорий */
-.category-btn .category-info-container,
-.category-btn .slot-machine,
-.category-btn .slot-content,
-.category-btn .info-title,
-.category-btn .info-difficulty,
-.category-btn .info-questions {
-    display: none;
-}
-
-/* Упрощаем категории - только иконка и название */
-.category-btn {
-    transition: var(--transition);
-}
-
-.category-btn:active {
-    transform: scale(0.98);
-}
-
-@media (max-width: 480px) {
-    .modal-category {
-        padding: 36px 28px;
+/* Плавная прокрутка */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
     }
+}
 
-    .category-modal-icon {
-        font-size: 4em;
-    }
-
-    .category-modal-title {
-        font-size: 1.6em;
-    }
-
-    .category-modal-description {
-        font-size: 1em;
-    }
-
-    .category-modal-info {
-        flex-direction: column;
-        gap: 16px;
+/* Для пользователей, предпочитающих уменьшенное движение */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
