@@ -1,5 +1,5 @@
 const questionsDatabase = {
-    geography: [
+    cinema: [
         {
             question: "Какая столица России?",
             answers: ["Санкт-Петербург", "Москва", "Казань", "Владивосток"],
@@ -62,7 +62,7 @@ const questionsDatabase = {
         }
     ],
 
-    aviation: [
+    literature: [
         {
             question: "В каком году был основан Аэрофлот?",
             answers: ["1923", "1932", "1945", "1950"],
@@ -125,7 +125,7 @@ const questionsDatabase = {
         }
     ],
 
-    culture: [
+    school: [
         {
             question: "Кто написал роман 'Война и мир'?",
             answers: ["Достоевский", "Толстой", "Чехов", "Пушкин"],
@@ -188,7 +188,131 @@ const questionsDatabase = {
         }
     ],
 
-    science: [
+    ecology: [
+        {
+            question: "Сколько планет в Солнечной системе?",
+            answers: ["7", "8", "9", "10"],
+            correct: 1,
+            image: "images/solar-system.jpg"
+        },
+        {
+            question: "Какой газ необходим для дыхания?",
+            answers: ["Азот", "Кислород", "Углекислый газ", "Гелий"],
+            correct: 1,
+            image: "images/oxygen.jpg"
+        },
+        {
+            question: "Кто открыл закон всемирного тяготения?",
+            answers: ["Эйнштейн", "Ньютон", "Галилей", "Кеплер"],
+            correct: 1,
+            image: "images/newton.jpg"
+        },
+        {
+            question: "Какая скорость света в вакууме?",
+            answers: ["100 000 км/с", "300 000 км/с", "500 000 км/с", "1 000 000 км/с"],
+            correct: 1,
+            image: "images/speed-of-light.jpg"
+        },
+        {
+            question: "Сколько костей у взрослого человека?",
+            answers: ["186", "206", "226", "246"],
+            correct: 1,
+            image: "images/skeleton.jpg"
+        },
+        {
+            question: "Какой элемент имеет химический символ Au?",
+            answers: ["Серебро", "Алюминий", "Золото", "Медь"],
+            correct: 2,
+            image: "images/gold.jpg"
+        },
+        {
+            question: "Сколько хромосом у человека?",
+            answers: ["23", "46", "48", "92"],
+            correct: 1,
+            image: "images/chromosomes.jpg"
+        },
+        {
+            question: "Кто изобрёл радио?",
+            answers: ["Эдисон", "Тесла", "Попов", "Маркони"],
+            correct: 2,
+            image: "images/radio.jpg"
+        },
+        {
+            question: "При какой температуре замерзает вода?",
+            answers: ["-10°C", "0°C", "+10°C", "+100°C"],
+            correct: 1,
+            image: "images/ice.jpg"
+        },
+        {
+            question: "Какая планета ближайшая к Солнцу?",
+            answers: ["Венера", "Земля", "Меркурий", "Марс"],
+            correct: 2,
+            image: "images/mercury.jpg"
+        }
+    ],
+        cartoons: [
+        {
+            question: "Сколько планет в Солнечной системе?",
+            answers: ["7", "8", "9", "10"],
+            correct: 1,
+            image: "images/solar-system.jpg"
+        },
+        {
+            question: "Какой газ необходим для дыхания?",
+            answers: ["Азот", "Кислород", "Углекислый газ", "Гелий"],
+            correct: 1,
+            image: "images/oxygen.jpg"
+        },
+        {
+            question: "Кто открыл закон всемирного тяготения?",
+            answers: ["Эйнштейн", "Ньютон", "Галилей", "Кеплер"],
+            correct: 1,
+            image: "images/newton.jpg"
+        },
+        {
+            question: "Какая скорость света в вакууме?",
+            answers: ["100 000 км/с", "300 000 км/с", "500 000 км/с", "1 000 000 км/с"],
+            correct: 1,
+            image: "images/speed-of-light.jpg"
+        },
+        {
+            question: "Сколько костей у взрослого человека?",
+            answers: ["186", "206", "226", "246"],
+            correct: 1,
+            image: "images/skeleton.jpg"
+        },
+        {
+            question: "Какой элемент имеет химический символ Au?",
+            answers: ["Серебро", "Алюминий", "Золото", "Медь"],
+            correct: 2,
+            image: "images/gold.jpg"
+        },
+        {
+            question: "Сколько хромосом у человека?",
+            answers: ["23", "46", "48", "92"],
+            correct: 1,
+            image: "images/chromosomes.jpg"
+        },
+        {
+            question: "Кто изобрёл радио?",
+            answers: ["Эдисон", "Тесла", "Попов", "Маркони"],
+            correct: 2,
+            image: "images/radio.jpg"
+        },
+        {
+            question: "При какой температуре замерзает вода?",
+            answers: ["-10°C", "0°C", "+10°C", "+100°C"],
+            correct: 1,
+            image: "images/ice.jpg"
+        },
+        {
+            question: "Какая планета ближайшая к Солнцу?",
+            answers: ["Венера", "Земля", "Меркурий", "Марс"],
+            correct: 2,
+            image: "images/mercury.jpg"
+        }
+    ],
+            art: [
         {
             question: "Сколько планет в Солнечной системе?",
             answers: ["7", "8", "9", "10"],
