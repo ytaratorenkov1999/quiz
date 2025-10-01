@@ -1,7 +1,3 @@
-console.log('app.js loaded');
-console.log('categoriesConfig:', categoriesConfig);
-console.log('questionsDatabase:', questionsDatabase);
-
 class QuizApp {
     constructor() {
         this.currentCategory = null;
@@ -9,14 +5,9 @@ class QuizApp {
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.correctAnswers = 0;
-        this.answered = false;
+        this.questionHistory = [];
+        this.selectedAnswers = {}; // Хранение выбранных ответов
         this.portalUrl = '/';
-
-        // Таймер
-        this.timer = null;
-        this.timeLeft = 30;
-        this.timerRunning = false;
-        this.pausedTime = null; // Для сохранения времени при паузе
 
         this.exitModal = null;
         this.exitConfirm = null;
@@ -27,7 +18,6 @@ class QuizApp {
 
     init() {
         this.cacheElements();
-        this.renderCategories();
         this.attachEventListeners();
         this.initModal();
     }
@@ -44,10 +34,7 @@ class QuizApp {
         this.totalQuestionsSpan = document.getElementById('total-questions');
         this.progressFill = document.getElementById('progress-fill');
         this.nextBtn = document.getElementById('next-btn');
-
-        // Таймер
-        this.timerContainer = document.getElementById('timer-container');
-        this.timerValue = document.getElementById('timer-value');
+        this.backBtn = document.getElementById('back-btn');
 
         this.resultsIcon = document.getElementById('results-icon');
         this.resultsTitle = document.getElementById('results-title');
@@ -59,39 +46,6 @@ class QuizApp {
         this.resultsStats = document.getElementById('results-stats');
 
         this.exitBtn = document.getElementById('exit-btn');
-        this.categoriesContainer = document.getElementById('categories-container');
-    }
-
-    // Динамическая генерация категорий с 3D переворотом
-    renderCategories() {
-        this.categoriesContainer.innerHTML = '';
-
-        Object.keys(categoriesConfig).forEach(categoryKey => {
-            const config = categoriesConfig[categoryKey];
-            const questionsCount = questionsDatabase[categoryKey]?.length || 0;
-
-            const categoryBtn = document.createElement('button');
-            categoryBtn.className = 'category-btn';
-            categoryBtn.dataset.category = categoryKey;
-
-            categoryBtn.innerHTML = `
-                <div class="category-card-inner">
-                    <div class="category-card-front">
-                        <span class="icon">${config.icon}</span>
-                        <span class="title">${config.title}</span>
-                    </div>
-                    <div class="category-card-back">
-                        <span class="back-icon">${config.icon}</span>
-                        <div class="back-description">${config.description}</div>
-                        <div class="back-divider"></div>
-                        <div class="back-difficulty">${config.difficulty}</div>
-                        <div class="back-questions">${questionsCount} вопросов</div>
-                    </div>
-                </div>
-            `;
-
-            this.categoriesContainer.appendChild(categoryBtn);
-        });
     }
 
     initModal() {
@@ -99,84 +53,175 @@ class QuizApp {
         this.exitConfirm = document.getElementById('exit-confirm');
         this.exitCancel = document.getElementById('exit-cancel');
 
-        // Проверка существования элементов модального окна
-        if (this.exitConfirm && this.exitCancel) {
-            this.exitConfirm.addEventListener('click', () => {
-                this.returnToWelcomeScreen();
-            });
+        this.exitConfirm.addEventListener('click', () => {
+            this.returnToWelcomeScreen();
+        });
 
-            this.exitCancel.addEventListener('click', () => {
+        this.exitCancel.addEventListener('click', () => {
+            this.hideExitModal();
+        });
+
+        this.exitModal.addEventListener('click', (e) => {
+            if (e.target === this.exitModal) {
                 this.hideExitModal();
-            });
-
-            this.exitModal.addEventListener('click', (e) => {
-                if (e.target === this.exitModal) {
-                    this.hideExitModal();
-                }
-            });
-        }
+            }
+        });
     }
 
     attachEventListeners() {
-        if (this.exitBtn) {
-            this.exitBtn.addEventListener('click', () => {
-                this.handleExitClick();
-            });
-        }
+        this.exitBtn.addEventListener('click', () => {
+            this.handleExitClick();
+        });
 
-        // Делегирование событий для категорий - только клик
-        if (this.categoriesContainer) {
-            this.categoriesContainer.addEventListener('click', (e) => {
-                const categoryBtn = e.target.closest('.category-btn');
-                if (categoryBtn) {
-                    this.handleCategoryClick(categoryBtn);
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            // Для мобильных - показываем инфо при первом клике, переход при втором
+            let clickCount = 0;
+            let clickTimer = null;
+
+            btn.addEventListener('click', (e) => {
+                const isMobile = window.innerWidth <= 768;
+                const category = e.currentTarget.dataset.category;
+
+                if (isMobile) {
+                    clickCount++;
+
+                    if (clickCount === 1) {
+                        // Первый клик - показываем информацию
+                        this.showCategoryInfo(e.currentTarget);
+
+                        // Сбрасываем счетчик через 3 секунды
+                        clickTimer = setTimeout(() => {
+                            clickCount = 0;
+                        }, 3000);
+                    } else {
+                        // Второй клик - запускаем викторину
+                        clearTimeout(clickTimer);
+                        clickCount = 0;
+                        this.startQuiz(category);
+                    }
+                } else {
+                    // На десктопе сразу запускаем
+                    this.startQuiz(category);
                 }
             });
-        }
 
-        if (this.nextBtn) {
-            this.nextBtn.addEventListener('click', () => {
-                this.nextQuestion();
-            });
-        }
-
-        const playAgainBtn = document.getElementById('play-again-btn');
-        if (playAgainBtn) {
-            playAgainBtn.addEventListener('click', () => {
-                this.startQuiz(this.currentCategory);
-            });
-        }
-
-        const changeCategoryBtn = document.getElementById('change-category-btn');
-        if (changeCategoryBtn) {
-            changeCategoryBtn.addEventListener('click', () => {
-                this.showScreen(this.welcomeScreen);
-                // Сбрасываем все активные категории
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('show-info');
+            // Для десктопа - показываем инфо при наведении
+            if (window.innerWidth > 768) {
+                btn.addEventListener('mouseenter', (e) => {
+                    this.showCategoryInfo(e.currentTarget);
                 });
-            });
-        }
+
+                btn.addEventListener('mouseleave', (e) => {
+                    this.hideCategoryInfo(e.currentTarget);
+                });
+            }
+        });
+
+        this.backBtn.addEventListener('click', () => {
+            this.goBack();
+        });
+
+        this.nextBtn.addEventListener('click', () => {
+            this.nextQuestion();
+        });
+
+        document.getElementById('play-again-btn').addEventListener('click', () => {
+            this.startQuiz(this.currentCategory);
+        });
+
+        document.getElementById('change-category-btn').addEventListener('click', () => {
+            this.showScreen(this.welcomeScreen);
+        });
     }
 
-    // В методе handleCategoryClick замените этот код:
-    handleCategoryClick(btn) {
+    showCategoryInfo(btn) {
         const category = btn.dataset.category;
+        const categoryData = this.getCategoryData(category);
 
-        // Если категория уже показывает информацию - запускаем викторину
-        if (btn.classList.contains('show-info')) {
-            this.startQuiz(category);
-        } else {
-            // Скрываем информацию у всех категорий
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('show-info');
-            });
+        // Добавляем класс для анимации
+        btn.classList.add('show-info');
 
-            // Добавляем небольшую задержку для плавного переворота
+        // Запускаем анимацию "слот-машины"
+        this.animateSlotMachine(btn, categoryData);
+    }
+
+    hideCategoryInfo(btn) {
+        btn.classList.remove('show-info');
+
+        // Возвращаем исходное содержимое
+        const category = btn.dataset.category;
+        const icon = btn.querySelector('.icon').textContent;
+        const title = btn.dataset.title;
+
+        btn.innerHTML = `
+            <span class="icon">${icon}</span>
+            <span class="title">${title}</span>
+        `;
+    }
+
+    animateSlotMachine(btn, data) {
+        const icon = btn.querySelector('.icon').textContent;
+
+        // Создаем контейнер для анимации
+        btn.innerHTML = `
+            <span class="icon">${icon}</span>
+            <div class="category-info-container">
+                <div class="slot-machine">
+                    <div class="slot-content">
+                        <span class="info-title">${data.title}</span>
+                    </div>
+                </div>
+                <div class="slot-machine">
+                    <div class="slot-content">
+                        <span class="info-difficulty">Сложность: ${data.difficulty}</span>
+                    </div>
+                </div>
+                <div class="slot-machine">
+                    <div class="slot-content">
+                        <span class="info-questions">${data.questions} вопросов</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Запускаем анимацию для каждого слота с задержкой
+        const slots = btn.querySelectorAll('.slot-machine');
+        slots.forEach((slot, index) => {
             setTimeout(() => {
-                btn.classList.add('show-info');
-            }, 50);
-        }
+                slot.classList.add('animate');
+            }, index * 100);
+        });
+    }
+
+    getCategoryData(category) {
+        const categories = {
+            geography: {
+                title: 'География',
+                difficulty: 'Средняя',
+                questions: 10
+            },
+            aviation: {
+                title: 'Авиация',
+                difficulty: 'Сложная',
+                questions: 10
+            },
+            culture: {
+                title: 'Культура',
+                difficulty: 'Средняя',
+                questions: 10
+            },
+            science: {
+                title: 'Наука',
+                difficulty: 'Сложная',
+                questions: 10
+            },
+            mixed: {
+                title: 'Микс',
+                difficulty: 'Разная',
+                questions: 15
+            }
+        };
+        return categories[category];
     }
 
     handleExitClick() {
@@ -188,38 +233,16 @@ class QuizApp {
     }
 
     showExitModal() {
-        if (this.exitModal) {
-            this.exitModal.classList.add('active');
-            // Сохраняем текущее время таймера
-            if (this.timerRunning) {
-                this.pausedTime = this.timeLeft;
-                this.stopTimer();
-            }
-        }
+        this.exitModal.classList.add('active');
     }
 
     hideExitModal() {
-        if (this.exitModal) {
-            this.exitModal.classList.remove('active');
-            // Возобновляем таймер с сохраненного времени
-            if (this.quizScreen.classList.contains('active') && !this.answered && this.pausedTime !== null) {
-                this.timeLeft = this.pausedTime;
-                this.pausedTime = null;
-                this.startTimer();
-            }
-        }
+        this.exitModal.classList.remove('active');
     }
 
     returnToWelcomeScreen() {
         this.hideExitModal();
-        this.stopTimer();
-        this.pausedTime = null;
         this.showScreen(this.welcomeScreen);
-
-        // Сбрасываем выбранную категорию
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.classList.remove('show-info');
-        });
     }
 
     exitToPortal() {
@@ -227,19 +250,13 @@ class QuizApp {
     }
 
     startQuiz(category) {
-        // Проверка существования категории и вопросов
-        if (!questionsDatabase[category] || questionsDatabase[category].length === 0) {
-            console.error(`No questions found for category: ${category}`);
-            return;
-        }
-
         this.currentCategory = category;
-        this.questions = this.shuffleArray([...questionsDatabase[category]]);
+        this.questions = [...questionsDatabase[category]];
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.correctAnswers = 0;
-        this.answered = false;
-        this.pausedTime = null;
+        this.questionHistory = [];
+        this.selectedAnswers = {}; // Сброс выбранных ответов
 
         this.totalQuestionsSpan.textContent = this.questions.length;
 
@@ -247,175 +264,91 @@ class QuizApp {
         this.loadQuestion();
     }
 
-    shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
     loadQuestion() {
-        this.answered = false;
         const question = this.questions[this.currentQuestionIndex];
-
-        // Проверка существования вопроса
-        if (!question) {
-            console.error('Question not found at index:', this.currentQuestionIndex);
-            this.showResults();
-            return;
-        }
 
         this.currentQuestionSpan.textContent = this.currentQuestionIndex + 1;
         const progress = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
         this.progressFill.style.width = progress + '%';
 
-        this.questionText.textContent = question.question;
-
-        // Отображение изображения ТОЛЬКО если путь указан и не пустой
-        if (question.image && question.image.trim() !== '') {
-            this.questionImageContainer.innerHTML = `
-                <img src="${question.image}"
-                     alt="Изображение к вопросу"
-                     class="question-image"
-                     onerror="this.parentElement.classList.remove('visible')">
-            `;
-            this.questionImageContainer.classList.add('visible');
+        if (question.image) {
+            this.questionImageContainer.innerHTML = `<img src="${question.image}" alt="Изображение вопроса" class="question-image">`;
         } else {
             this.questionImageContainer.innerHTML = '';
-            this.questionImageContainer.classList.remove('visible');
         }
 
+        this.questionText.textContent = question.question;
         this.answersContainer.innerHTML = '';
 
-        // Проверка существования ответов
-        if (!question.answers || question.answers.length === 0) {
-            console.error('No answers found for question:', question);
-            return;
-        }
-
-        // Перемешиваем ответы
-        const shuffledAnswers = question.answers.map((answer, index) => ({ answer, originalIndex: index }));
-        this.shuffleArray(shuffledAnswers);
-
-        shuffledAnswers.forEach((item) => {
+        question.answers.forEach((answer, index) => {
             const button = document.createElement('button');
             button.className = 'answer-btn';
-            button.textContent = item.answer;
-            button.dataset.originalIndex = item.originalIndex;
-            button.addEventListener('click', () => this.selectAnswer(item.originalIndex, button));
+            button.textContent = answer;
+            button.addEventListener('click', () => this.selectAnswer(index));
             this.answersContainer.appendChild(button);
         });
 
-        // Сбрасываем кнопку "Далее"
-        this.nextBtn.classList.remove('active');
-        this.nextBtn.disabled = true;
-
-        // Запускаем таймер
-        this.startTimer();
-    }
-
-    startTimer() {
-        this.stopTimer();
-        // Если нет сохраненного времени, начинаем с 30 секунд
-        if (this.pausedTime === null) {
-            this.timeLeft = 30;
-        }
-        this.timerRunning = true;
-        this.updateTimerDisplay();
-
-        this.timer = setInterval(() => {
-            this.timeLeft--;
-            this.updateTimerDisplay();
-
-            if (this.timeLeft <= 0) {
-                this.handleTimeOut();
-            }
-        }, 1000);
-    }
-
-    stopTimer() {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
-            this.timerRunning = false;
-        }
-        if (this.timerContainer) {
-            this.timerContainer.classList.remove('warning');
+        // Проверяем, был ли уже дан ответ на этот вопрос
+        const savedAnswer = this.selectedAnswers[this.currentQuestionIndex];
+        if (savedAnswer !== undefined) {
+            // Восстанавливаем состояние
+            this.restoreAnswerState(savedAnswer);
+        } else {
+            // Показываем кнопку "Далее" как неактивную
+            this.nextBtn.classList.remove('active');
+            this.nextBtn.disabled = true;
         }
     }
 
-    updateTimerDisplay() {
-        if (this.timerValue) {
-            this.timerValue.textContent = this.timeLeft;
-        }
-
-        // Меняем стиль в зависимости от оставшегося времени
-        if (this.timerContainer) {
-            if (this.timeLeft <= 10) {
-                this.timerContainer.classList.add('warning');
-            } else {
-                this.timerContainer.classList.remove('warning');
-            }
-        }
-    }
-
-    handleTimeOut() {
-        this.stopTimer();
-
-        if (this.answered) return;
-
-        this.answered = true;
-
-        // Подсвечиваем все ответы красным (timeout)
-        const answerButtons = this.answersContainer.querySelectorAll('.answer-btn');
-
-        answerButtons.forEach(btn => {
-            btn.classList.add('disabled');
-            btn.classList.add('timeout');
-        });
-
-        // Автоматический переход к следующему вопросу через 2 секунды
-        setTimeout(() => {
-            this.nextQuestion();
-        }, 2000);
-    }
-
-    selectAnswer(selectedIndex, button) {
-        if (this.answered) return;
-
-        this.stopTimer();
-        this.pausedTime = null; // Сбрасываем сохраненное время
-        this.answered = true;
-
+    restoreAnswerState(selectedIndex) {
         const question = this.questions[this.currentQuestionIndex];
         const answerButtons = this.answersContainer.querySelectorAll('.answer-btn');
 
         answerButtons.forEach(btn => btn.classList.add('disabled'));
 
         if (selectedIndex === question.correct) {
-            button.classList.add('correct');
+            answerButtons[selectedIndex].classList.add('correct');
+        } else {
+            answerButtons[selectedIndex].classList.add('incorrect');
+            answerButtons[question.correct].classList.add('correct');
+        }
+
+        this.nextBtn.classList.add('active');
+        this.nextBtn.disabled = false;
+    }
+
+    selectAnswer(selectedIndex) {
+        // Если уже был выбран ответ, игнорируем
+        if (this.selectedAnswers[this.currentQuestionIndex] !== undefined) {
+            return;
+        }
+
+        const question = this.questions[this.currentQuestionIndex];
+        const answerButtons = this.answersContainer.querySelectorAll('.answer-btn');
+
+        // Сохраняем выбранный ответ
+        this.selectedAnswers[this.currentQuestionIndex] = selectedIndex;
+
+        answerButtons.forEach(btn => btn.classList.add('disabled'));
+
+        if (selectedIndex === question.correct) {
+            answerButtons[selectedIndex].classList.add('correct');
             this.score += 10;
             this.correctAnswers++;
         } else {
-            button.classList.add('incorrect');
-            answerButtons.forEach(btn => {
-                if (parseInt(btn.dataset.originalIndex) === question.correct) {
-                    btn.classList.add('correct');
-                }
-            });
+            answerButtons[selectedIndex].classList.add('incorrect');
+            answerButtons[question.correct].classList.add('correct');
         }
 
         // Активируем кнопку "Далее"
         setTimeout(() => {
             this.nextBtn.classList.add('active');
             this.nextBtn.disabled = false;
-        }, 300);
+        }, 500);
     }
 
     nextQuestion() {
-        this.pausedTime = null; // Сбрасываем сохраненное время перед следующим вопросом
+        this.questionHistory.push(this.currentQuestionIndex);
         this.currentQuestionIndex++;
 
         if (this.currentQuestionIndex < this.questions.length) {
@@ -425,61 +358,73 @@ class QuizApp {
         }
     }
 
-    showResults() {
-        this.stopTimer();
-        this.pausedTime = null;
+    goBack() {
+        if (this.questionHistory.length > 0) {
+            // Удаляем сохраненный ответ для текущего вопроса
+            delete this.selectedAnswers[this.currentQuestionIndex];
 
+            // Если был дан ответ, вычитаем баллы
+            const question = this.questions[this.currentQuestionIndex];
+            const savedAnswer = this.selectedAnswers[this.currentQuestionIndex];
+            if (savedAnswer === question.correct) {
+                this.score -= 10;
+                this.correctAnswers--;
+            }
+
+            this.currentQuestionIndex = this.questionHistory.pop();
+            this.loadQuestion();
+        } else {
+            this.showScreen(this.welcomeScreen);
+        }
+    }
+
+    showResults() {
         const percentage = Math.round((this.correctAnswers / this.questions.length) * 100);
         const incorrectAnswers = this.questions.length - this.correctAnswers;
 
-        if (this.finalScoreSpan) this.finalScoreSpan.textContent = this.score;
-        if (this.correctCountSpan) this.correctCountSpan.textContent = this.correctAnswers;
-        if (this.questionsCountSpan) this.questionsCountSpan.textContent = this.questions.length;
-        if (this.percentageSpan) this.percentageSpan.textContent = percentage + '%';
+        this.finalScoreSpan.textContent = this.score;
+        this.correctCountSpan.textContent = this.correctAnswers;
+        this.questionsCountSpan.textContent = this.questions.length;
+        this.percentageSpan.textContent = percentage + '%';
 
-        if (this.resultsStats) {
-            this.resultsStats.innerHTML = `
-                <div class="stat-item">
-                    <span class="stat-value">${this.correctAnswers}</span>
-                    <span class="stat-label">Правильно</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value" style="color: var(--err);">${incorrectAnswers}</span>
-                    <span class="stat-label">Неправильно</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value">${percentage}%</span>
-                    <span class="stat-label">Точность</span>
-                </div>
-            `;
-        }
+        this.resultsStats.innerHTML = `
+            <div class="stat-item">
+                <span class="stat-value">${this.correctAnswers}</span>
+                <span class="stat-label">Правильно</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" style="color: var(--err);">${incorrectAnswers}</span>
+                <span class="stat-label">Неправильно</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">${percentage}%</span>
+                <span class="stat-label">Точность</span>
+            </div>
+        `;
 
-        if (this.resultsIcon && this.resultsTitle && this.resultsMessage) {
-            if (percentage >= 90) {
-                this.resultsIcon.textContent = '🏆';
-                this.resultsTitle.textContent = 'Превосходно!';
-                this.resultsMessage.textContent = 'Вы настоящий эксперт! Фантастический результат! Ваши знания впечатляют!';
-            } else if (percentage >= 70) {
-                this.resultsIcon.textContent = '🌟';
-                this.resultsTitle.textContent = 'Отличная работа!';
-                this.resultsMessage.textContent = 'Вы показали отличные знания! Так держать! Продолжайте в том же духе!';
-            } else if (percentage >= 50) {
-                this.resultsIcon.textContent = '👍';
-                this.resultsTitle.textContent = 'Хороший результат!';
-                this.resultsMessage.textContent = 'Неплохо! Есть куда стремиться! Ещё немного практики и будет отлично!';
-            } else {
-                this.resultsIcon.textContent = '📚';
-                this.resultsTitle.textContent = 'Можно лучше!';
-                this.resultsMessage.textContent = 'Не расстраивайтесь! Попробуйте ещё раз! Каждая попытка делает вас умнее!';
-            }
+        if (percentage >= 90) {
+            this.resultsIcon.textContent = '🏆';
+            this.resultsTitle.textContent = 'Превосходно!';
+            this.resultsMessage.textContent = 'Вы настоящий эксперт! Фантастический результат! Ваши знания впечатляют!';
+        } else if (percentage >= 70) {
+            this.resultsIcon.textContent = '🌟';
+            this.resultsTitle.textContent = 'Отличная работа!';
+            this.resultsMessage.textContent = 'Вы показали отличные знания! Так держать! Продолжайте в том же духе!';
+        } else if (percentage >= 50) {
+            this.resultsIcon.textContent = '👍';
+            this.resultsTitle.textContent = 'Хороший результат!';
+            this.resultsMessage.textContent = 'Неплохо! Есть куда стремиться! Ещё немного практики и будет отлично!';
+        } else {
+            this.resultsIcon.textContent = '📚';
+            this.resultsTitle.textContent = 'Можно лучше!';
+            this.resultsMessage.textContent = 'Не расстраивайтесь! Попробуйте ещё раз! Каждая попытка делает вас умнее!';
         }
 
         this.showScreen(this.resultsScreen);
     }
 
     showScreen(screen) {
-        const screens = document.querySelectorAll('.screen');
-        screens.forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         screen.classList.add('active');
     }
 }

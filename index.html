@@ -14,20 +14,41 @@
     </button>
 
     <div class="container">
-        <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
             <div class="logo">
                 <p class="subtitle">Проверьте свои знания в полёте!</p>
             </div>
 
             <div class="category-selection">
-                <div class="categories" id="categories-container">
-                    <!-- Категории будут генерироваться динамически -->
+                <div class="categories">
+                    <button class="category-btn" data-category="geography" data-title="География">
+                        <span class="icon">🌍</span>
+                        <span class="title">География</span>
+                    </button>
+
+                    <button class="category-btn" data-category="aviation" data-title="Авиация">
+                        <span class="icon">✈️</span>
+                        <span class="title">Авиация</span>
+                    </button>
+
+                    <button class="category-btn" data-category="culture" data-title="Культура">
+                        <span class="icon">🎭</span>
+                        <span class="title">Культура</span>
+                    </button>
+
+                    <button class="category-btn" data-category="science" data-title="Наука">
+                        <span class="icon">🔬</span>
+                        <span class="title">Наука</span>
+                    </button>
+
+                    <button class="category-btn" data-category="mixed" data-title="Микс">
+                        <span class="icon">🎲</span>
+                        <span class="title">Микс</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Quiz Screen -->
         <div id="quiz-screen" class="screen">
             <div class="quiz-header">
                 <div class="progress-bar">
@@ -37,21 +58,23 @@
                     <span class="question-counter">
                         Вопрос <span id="current-question">1</span> из <span id="total-questions">10</span>
                     </span>
-                    <div class="timer-container" id="timer-container">
-                        <span class="timer-icon">⏱️</span>
-                        <span class="timer-value" id="timer-value">30</span>
-                    </div>
                 </div>
             </div>
 
             <div class="quiz-content">
-                <h2 class="question" id="question-text"></h2>
+                <div id="question-image-container"></div>
 
-                <div id="question-image-container" class="question-image-container"></div>
+                <h2 class="question" id="question-text"></h2>
 
                 <div class="answers" id="answers-container"></div>
 
                 <div class="quiz-controls">
+                    <button id="back-btn" class="btn btn-back">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Назад
+                    </button>
                     <button id="next-btn" class="btn btn-primary">
                         Далее
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -62,7 +85,6 @@
             </div>
         </div>
 
-        <!-- Results Screen -->
         <div id="results-screen" class="screen">
             <div class="results-content">
                 <div class="results-icon" id="results-icon">🏆</div>
@@ -93,8 +115,8 @@
                     </button>
                     <button class="btn btn-secondary" id="change-category-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15" stroke="currentColor" stroke-width="2"/>
-                        <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15" stroke="currentColor" stroke-width="2"/>
+                            <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/>
                         </svg>
                         Выбрать другую
                     </button>
@@ -103,7 +125,6 @@
         </div>
     </div>
 
-    <!-- Exit Modal -->
     <div id="exit-modal" class="modal">
         <div class="modal-content">
             <div class="modal-icon">⚠️</div>
